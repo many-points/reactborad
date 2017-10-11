@@ -1,0 +1,49 @@
+body {
+  background-color: black;
+}
+
+p {
+  margin: 0 0 0 0;
+}
+
+.jumbotron {
+  margin: 10px;
+}
+
+.jumbotron p {
+  margin-bottom: 0px;
+}
+
+.postBody {
+  display: flex;
+  flex-direction: row;
+}
+
+.postText {
+}
+
+.postImage {
+  max-width: 100%;
+  height: auto;
+  padding-right: 10px;
+}
+
+.postImage > img {
+  width: 300px;
+}
+
+@media screen and (min-width: 0px) {
+  .jumbotron {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .container .jumbotron,
+  .container-fluid .jumbotron {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+  .jumbotron h1,
+  .jumbotron .h1 {
+    font-size: 63px;
+  }
+}

@@ -10,7 +10,7 @@ class Form extends React.Component {
       text: "",
       filename: "",
       file: null,
-      message: "Waiting",
+      attach_button: "Attach file",
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -25,11 +25,9 @@ class Form extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    var formdata = {
-      text: this.state.text,
-      filename: this.state.filename,
-      file: this.state.file,
-    };
+    var formdata = new FormData();
+    formdata.append('text', this.state.text);
+    formdata.append('file', this.state.file);
 
     axios.post('/post', formdata)
       .then((response) => {
@@ -41,13 +39,22 @@ class Form extends React.Component {
   }
 
   uploadFile() {
-    this.refs.file.click();
+    if (this.state.file == null) {
+      this.refs.file.click();
+    } else {
+      this.setState({
+        filename: "",
+        file: null,
+        attach_button: "Attach file",
+      });
+    }
   }
 
   handleFileUpload(event) {
     this.setState({
-      filename: event.target.value,
+      filename: event.target.files[0].name,
       file: event.target.files[0],
+      attach_button: "Remove file",
     });
   }
 
@@ -67,11 +74,10 @@ class Form extends React.Component {
             <input className="btn btn-primary" type="submit" value="Post" />
             <div className="fileinput" onClick={ () => {this.uploadFile()} }>
               <span className="btn btn-default btn-file">
-                <span>Attach file</span>
+                <span>{this.state.attach_button}</span>
               </span>
               <span ref="filename">{this.state.filename}</span>
             </div>
-            <span> {this.state.message}</span>
             <input
               type="file"
               ref="file"

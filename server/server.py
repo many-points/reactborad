@@ -7,10 +7,12 @@ app = Flask(__name__, static_folder="../static", template_folder="../static")
 def index():
     return render_template("index.html")
 
-@app.route("/post", methods=['POST', 'GET'])
+@app.route("/post", methods=['POST'])
 def post():
-    data = request.json
-    return data['text']
+    text = request.form['text']
+    file_storage = request.files['file']
+    filename = file_storage.filename
+    return filename
 
 if __name__ == '__main__':
     app.run()

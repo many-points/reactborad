@@ -6,6 +6,10 @@ p {
   margin: 0 0 0 0;
 }
 
+form {
+  margin-bottom: 0px;
+}
+
 .jumbotron {
   margin: 10px;
 }
@@ -30,6 +34,37 @@ p {
 
 .postImage > img {
   width: 300px;
+}
+
+.postNumber {
+  cursor: hand;
+}
+
+.textarea {
+  resize: vertical;
+  margin-bottom: 10px;
+  line-height: normal;
+  padding: 6px 6px;
+}
+
+.btn {
+  margin-right: 10px;
+}
+
+.form-group {
+  margin-bottom: 0px;
+}
+
+.fileinput {
+  display: inline;
+}
+
+input[type=file] {
+  display: inline;
+  height: 0px;
+  width: 0px;
+  overflow: hidden;
+  opacity: 0;
 }
 
 @media screen and (min-width: 0px) {

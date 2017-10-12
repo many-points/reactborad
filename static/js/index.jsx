@@ -25,17 +25,16 @@ class Form extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    var formdata = new FormData();
-    formdata.append('text', this.state.text);
-    formdata.append('file', this.state.file);
+    var formdata = {
+      text: this.state.text,
+      filename: this.state.filename,
+    }
 
-    axios.post('/post', formdata)
-      .then((response) => {
-        console.log(response)
-      })
-      .catch((error) => {
-        console.log(error)
-      });
+    axios.post('/posts', formdata).then((response) => {
+
+    }).catch((error) => {
+      console.log(error);
+    });
   }
 
   uploadFile() {
@@ -76,8 +75,8 @@ class Form extends React.Component {
               <span className="btn btn-default btn-file">
                 <span>{this.state.attach_button}</span>
               </span>
-              <span ref="filename">{this.state.filename}</span>
             </div>
+            <span ref="filename">{this.state.filename}</span>
             <input
               type="file"
               ref="file"
@@ -92,7 +91,7 @@ class Form extends React.Component {
 
 class Post extends React.Component {
   renderImage () {
-    if (this.props.postData.image == "") {
+    if (!this.props.postData.image) {
       return (null);
     } else {
       return (
@@ -113,11 +112,12 @@ class Post extends React.Component {
         {this.renderImage()}
         <div className="postText">
           <p>
-            <a href="#" onClick={() => {this.insertQuote()}}>
+            <a onClick={() => {this.insertQuote()}}>
               <span className="postNumber">#{this.props.postData.id}</span>
-            </a>
+            </a>&nbsp;
+            <span className="postTimestamp">{this.props.postData.timestamp}</span>
           </p>
-          <p> {this.props.postData.post} </p>
+          <p> {this.props.postData.text} </p>
         </div>
       </div>
     )
@@ -128,30 +128,22 @@ class Posts extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      posts: [
-        {
-          id: 1,
-          post: "Lorem ipsum dolor sit amet",
-          image: "/static/images/1.png"
-        },
-        {
-          id: 2,
-          post: "Lorem ipsum dolor sit amet",
-          image: ""
-        },
-        {
-          id: 3,
-          post: "Lorem ipsum dolor sit amet",
-          image: "/static/images/3.jpg"
-        }
-      ]
+      posts: []
     };
+    this.loadPosts();
+  }
+
+  loadPosts() {
+    axios.get('/posts').then((response) => {
+      this.setState({
+        posts: this.state.posts.concat(response.data.posts)
+      });
+      console.log(this.state)
+    });
   }
 
   render () {
-    const mockup = this.state.posts.slice().reverse();
-
-    const posts = mockup.map((data, key) => {
+    const posts = this.state.posts.map((data, key) => {
       return (
         <li key={key}>
           <div className="jumbotron">

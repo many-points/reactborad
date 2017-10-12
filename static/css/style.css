@@ -40,6 +40,10 @@ form {
   cursor: hand;
 }
 
+.postTimestamp {
+  font-size: 75%;
+}
+
 .textarea {
   resize: vertical;
   margin-bottom: 10px;

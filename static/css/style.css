@@ -1,5 +1,8 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
 body {
   background-color: black;
+  font-family: "Helvetica Neue", "Open Sans", Helvetica, Arial, sans-serif;
 }
 
 p {
@@ -16,6 +19,8 @@ form {
 
 .jumbotron p {
   margin-bottom: 0px;
+  font-weight: 200;
+  font-size: 20px;
 }
 
 .postBody {
@@ -53,24 +58,9 @@ form {
   padding: 6px 6px;
 }
 
+
 .btn {
   margin-right: 10px;
-}
-
-.form-group {
-  margin-bottom: 0px;
-}
-
-.fileinput {
-  display: inline;
-}
-
-input[type=file] {
-  display: inline;
-  height: 0px;
-  width: 0px;
-  overflow: hidden;
-  opacity: 0;
 }
 
 @media screen and (min-width: 0px) {
@@ -87,4 +77,54 @@ input[type=file] {
   .jumbotron .h1 {
     font-size: 63px;
   }
+}
+
+.message-box {
+  display: inline-block;
+  padding: 6px;
+  margin: 0px;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  float: right;
+  color: #bbc;
+}
+
+.waiting {
+  height: 75px;
+  line-height: 75px;
+  font-size: 21px;
+  color: #000;
+  text-align: center;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  animation: fabulous 2s linear infinite;
+}
+
+@keyframes fabulous {
+    0% { color: #0099ff }
+    17% { color: #66ff66 }
+    35% { color: #ffff66 }
+    51% { color: #ff6666 }
+    68% { color: #ff66ff }
+    85% { color: #6699ff }
+    100% { color: #0099ff }
+}
+
+.form-group {
+  margin-bottom: 0px;
+}
+
+.fileinput {
+  display: inline;
+}
+
+input[type=file] {
+  display: inline;
+  height: 0px;
+  width: 0px;
+  overflow: hidden;
+  opacity: 0;
 }

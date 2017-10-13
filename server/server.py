@@ -2,15 +2,24 @@ from flask import Flask, render_template, request, g, abort, escape
 import os
 import json
 import sqlite3
+import imghdr
+import binascii
 from datetime import datetime
 
-app = Flask(__name__, static_folder="../static/dist", template_folder="../static")
+from flask_compress import Compress
+
+STATIC_FOLDER = "../static/dist"
+TEMPLATE_FOLDER = "../static"
+
+app = Flask(__name__, static_folder=STATIC_FOLDER, template_folder=TEMPLATE_FOLDER)
 app.config.update(dict(
     DATABASE = os.path.join(app.root_path, 'database.db'),
     SECRET_KEY = 'devkey',
     USERNAME = 'admin',
     PASSWORD = 'password'
 ))
+
+Compress(app)
 
 class Row(sqlite3.Row):
     def get(self, key, default=None):
@@ -49,7 +58,8 @@ def make_post_response(post):
         'id': post.get('id', 0),
         'text': post.get('text', ''),
         'timestamp': post.get('timestamp',
-            datetime.fromtimestamp(0).strftime('%Y-%m-%d %H:%M:%S'))
+            datetime.fromtimestamp(0).strftime('%Y-%m-%d %H:%M:%S')),
+        'image': post.get('image', '')
     }
 
 @app.route("/")
@@ -59,26 +69,32 @@ def index():
 @app.route("/posts", methods=['POST'])
 def create_post():
     text      = request.json.get('text', '')
-    file_id   = request.json.get('filename', '')
+    filename  = request.json.get('filename', '')
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     ip        = request.remote_addr
+    upload_token = ''
 
-    if not (text or file_id):
+    if not (text or filename):
         abort(400)
+
+    if filename:
+        filename = str(datetime.now().timestamp()).replace('.','')
+        upload_token = str(binascii.b2a_hex(os.urandom(15)))
 
     db = get_db()
     cur = db.execute("select id from posts order by id desc limit 1")
-    last_id = cur.fetchone()
-    db.execute("insert into posts (text, file, timestamp, ip) values (?, ?, ? ,?)",
-               [text, file_id, timestamp, ip])
+    last_id = cur.fetchone() or {}
+    db.execute("insert into posts (text, image, timestamp, ip, upload_token) values (?, ?, ? ,?, ?)",
+               [text, filename, timestamp, ip, upload_token])
     db.commit()
 
     response = {
-        'posts': [{
+        'post': {
             'id': last_id.get('id', -1) + 1,
             'text': text,
-            'timestamp': timestamp
-        }]
+            'timestamp': timestamp,
+            'upload_token': upload_token
+        }
     }
 
     return json.dumps(response)
@@ -97,6 +113,56 @@ def get_posts():
 @app.route("/posts/<int:id>", methods=['GET'])
 def get_post():
     pass
+
+@app.route("/posts/<int:id>/image", methods=['POST'])
+def upload_image(id):
+    request_token = request.headers.get('Authorization', '')
+
+    if not request_token:
+        abort(401)
+
+    storage = request.files.get('image', None)
+
+    if not storage:
+        abort(400)
+
+    image = storage.read()
+
+    filetype = imghdr.what(None, h=image)
+
+    print(image)
+    print(filetype)
+
+    if filetype not in ['gif', 'jpeg', 'png']:
+        abort(400)
+
+    db = get_db()
+    cur = db.execute("select image, upload_token from posts where id is (?)", [id])
+    image_name, upload_token = cur.fetchone()
+
+    if not (image_name and upload_token):
+        abort(400)
+
+    if request_token != upload_token:
+        abort(401)
+
+    fixed_name = image_name + '.' + filetype
+    db.execute("update posts set image = (?) where id is (?)", [fixed_name, id])
+    db.commit()
+
+    with open(STATIC_FOLDER + '/images/' + fixed_name, 'wb') as f:
+        f.write(image)
+
+    #generate thumbnail here
+
+    response = {
+        'image': {
+            'id': id,
+            'filename': fixed_name
+        }
+    }
+
+    return json.dumps(response)
 
 
 if __name__ == '__main__':

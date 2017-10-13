@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, g, abort
+from flask import Flask, render_template, request, g, abort, escape
 import os
 import json
 import sqlite3
 from datetime import datetime
 
-app = Flask(__name__, static_folder="../static", template_folder="../static")
+app = Flask(__name__, static_folder="../static/dist", template_folder="../static")
 app.config.update(dict(
     DATABASE = os.path.join(app.root_path, 'database.db'),
     SECRET_KEY = 'devkey',
@@ -44,6 +44,14 @@ def close_db(error):
     if hasattr(g, 'sqlite_db'):
         g.sqlite_db.close()
 
+def make_post_response(post):
+    return {
+        'id': post.get('id', 0),
+        'text': post.get('text', ''),
+        'timestamp': post.get('timestamp',
+            datetime.fromtimestamp(0).strftime('%Y-%m-%d %H:%M:%S'))
+    }
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -58,12 +66,20 @@ def create_post():
     if not (text or file_id):
         abort(400)
 
-    response = {'_id': file_id}
-
     db = get_db()
+    cur = db.execute("select id from posts order by id desc limit 1")
+    last_id = cur.fetchone()
     db.execute("insert into posts (text, file, timestamp, ip) values (?, ?, ? ,?)",
                [text, file_id, timestamp, ip])
     db.commit()
+
+    response = {
+        'posts': [{
+            'id': last_id.get('id', -1) + 1,
+            'text': text,
+            'timestamp': timestamp
+        }]
+    }
 
     return json.dumps(response)
 
@@ -72,15 +88,16 @@ def get_posts():
     db = get_db()
     cur = db.execute("select * from posts order by id desc limit 20")
 
-    data = {
-        'posts': [{
-            'id': post.get('id', 0),
-            'text': post.get('text', ''),
-            'timestamp': post.get('timestamp', datetime.fromtimestamp(0).strftime('%Y-%m-%d %H:%M:%S'))
-        } for post in cur.fetchall()]
+    response = {
+        'posts': [make_post_response(post) for post in cur.fetchall()]
     }
 
-    return json.dumps(data)
+    return json.dumps(response)
+
+@app.route("/posts/<int:id>", methods=['GET'])
+def get_post():
+    pass
+
 
 if __name__ == '__main__':
     app.run()

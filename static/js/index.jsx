@@ -31,11 +31,19 @@ class Form extends React.Component {
     }
 
     axios.post('/posts', formdata).then((response) => {
-
+      this.props.formCallback(response.data);
     }).catch((error) => {
       console.log(error);
     });
 
+  }
+
+  clearForm() {
+    this.setState({
+      filename: "",
+      file: null,
+      attach_button: "Attach file",
+    });
   }
 
   uploadFile() {
@@ -111,14 +119,14 @@ class Post extends React.Component {
     return (
       <div className="postBody">
         {this.renderImage()}
-        <div className="postText">
+        <div>
           <p>
             <a onClick={() => {this.insertQuote()}}>
               <span className="postNumber">#{this.props.postData.id}</span>
             </a>&nbsp;
             <span className="postTimestamp">{this.props.postData.timestamp}</span>
           </p>
-          <p> {this.props.postData.text} </p>
+          <p className="postText">{this.props.postData.text}</p>
         </div>
       </div>
     )
@@ -151,23 +159,33 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      posts: []
+      posts: [],
+      postsLoaded: 0,
+      topPost: 0
     };
     this.loadPosts();
+    this.updateOnFormSend = this.updateOnFormSend.bind(this);
   }
 
   loadPosts() {
     axios.get('/posts').then((response) => {
+      const posts = this.state.posts.concat(response.data.posts);
       this.setState({
-        posts: this.state.posts.concat(response.data.posts)
+        posts: posts,
+        postsLoaded: posts.length,
+        topPost: posts[0].id
       });
+      console.log(this.state);
     });
   }
 
   updateOnFormSend(data) {
-    var post = {
-
-    }
+    const posts = data.posts.concat(this.state.posts);
+    this.setState({
+      posts: posts,
+      postsLoaded: posts.length,
+      topPost: posts[0].id
+    });
   }
 
   render () {

@@ -1,4 +1,6 @@
 const webpack = require("webpack");
+//var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 
 const config = {
   entry:  __dirname + '/js/index.jsx',
@@ -29,8 +31,9 @@ const config = {
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
       }
-    })
+    }),
     */
+//  new BundleAnalyzerPlugin()
   ]
 };
 

@@ -24,6 +24,8 @@ form {
 }
 
 .postText {
+  white-space: pre-line;
+  line-height: normal;
 }
 
 .postImage {

@@ -31,6 +31,10 @@ class Form extends React.Component {
     var formdata = {
       text: this.state.text,
       filename: this.state.filename,
+    };
+
+    if (!(formdata.text | formdata.filename)) {
+      return;
     }
 
     var image = this.state.file;

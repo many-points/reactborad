@@ -5,6 +5,7 @@ const config = {
   output: {
     path: __dirname + '/dist',
     filename: 'bundle.js',
+
   },
   resolve: {
     extensions: ['.js', '.jsx', '.css'],
@@ -21,7 +22,16 @@ const config = {
         use: ['style-loader', 'css-loader']
       }
     ]
-  }
+  },
+  plugins: [
+    /*
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    })
+    */
+  ]
 };
 
 module.exports = config;

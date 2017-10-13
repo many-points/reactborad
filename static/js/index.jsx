@@ -35,6 +35,7 @@ class Form extends React.Component {
     }).catch((error) => {
       console.log(error);
     });
+
   }
 
   uploadFile() {
@@ -67,7 +68,7 @@ class Form extends React.Component {
               rows="10"
               ref="textarea"
               value={this.state.value}
-              onChange={this.handleChange}
+              onBlur={this.handleChange}
             >
             </textarea>
             <input className="btn btn-primary" type="submit" value="Post" />
@@ -125,25 +126,8 @@ class Post extends React.Component {
 }
 
 class Posts extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      posts: []
-    };
-    this.loadPosts();
-  }
-
-  loadPosts() {
-    axios.get('/posts').then((response) => {
-      this.setState({
-        posts: this.state.posts.concat(response.data.posts)
-      });
-      console.log(this.state)
-    });
-  }
-
   render () {
-    const posts = this.state.posts.map((data, key) => {
+    const posts = this.props.posts.map((data, key) => {
       return (
         <li key={key}>
           <div className="jumbotron">
@@ -164,11 +148,33 @@ class Posts extends React.Component {
 }
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      posts: []
+    };
+    this.loadPosts();
+  }
+
+  loadPosts() {
+    axios.get('/posts').then((response) => {
+      this.setState({
+        posts: this.state.posts.concat(response.data.posts)
+      });
+    });
+  }
+
+  updateOnFormSend(data) {
+    var post = {
+
+    }
+  }
+
   render () {
     return (
       <div className="container">
-        <Form />
-        <Posts />
+        <Form formCallback={this.updateOnFormSend}/>
+        <Posts posts={this.state.posts}/>
       </div>
     );
   }

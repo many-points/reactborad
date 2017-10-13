@@ -122,7 +122,7 @@ class Form extends React.Component {
             <div className="form-group">
               <textarea
                 className="form-control textarea"
-                rows="10"
+                rows="7"
                 ref="textarea"
                 value={this.state.value}
                 onBlur={this.handleChange}
@@ -162,9 +162,11 @@ class Post extends React.Component {
       return (null);
     } else {
       return (
+      <a href={"/dist/images/" + this.props.postData.image} target="_blank">
         <div className="postImage">
-          <img src={"/dist/images/" + this.props.postData.image} />
+            <img src={"/dist/images/" + this.props.postData.image} />
         </div>
+      </a>
       );
     };
   }

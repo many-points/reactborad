@@ -1,8 +1,8 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@import url('https://fonts.googleapis.com/css?family=Lato');
 
 body {
   background-color: black;
-  font-family: "Helvetica Neue", "Open Sans", Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", "Lato", Helvetica, Arial, sans-serif;
 }
 
 p {
@@ -18,9 +18,9 @@ form {
 }
 
 .jumbotron p {
-  margin-bottom: 0px;
+  margin-bottom: 5px;
   font-weight: 200;
-  font-size: 20px;
+  font-size: 20px
 }
 
 .postBody {
@@ -56,6 +56,8 @@ form {
   margin-bottom: 10px;
   line-height: normal;
   padding: 6px 6px;
+  font-size: 16px;
+  min-size: 50px;
 }
 
 

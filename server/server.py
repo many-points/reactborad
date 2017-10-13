@@ -83,7 +83,7 @@ def create_post():
 
     db = get_db()
     cur = db.execute("select id from posts order by id desc limit 1")
-    last_id = cur.fetchone() or {}
+    last_id = cur.fetchone() or {'id': 0}
     db.execute("insert into posts (text, image, timestamp, ip, upload_token) values (?, ?, ? ,?, ?)",
                [text, filename, timestamp, ip, upload_token])
     db.commit()
@@ -129,9 +129,6 @@ def upload_image(id):
     image = storage.read()
 
     filetype = imghdr.what(None, h=image)
-
-    print(image)
-    print(filetype)
 
     if filetype not in ['gif', 'jpeg', 'png']:
         abort(400)

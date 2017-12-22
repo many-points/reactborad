@@ -33,7 +33,9 @@ class Form extends React.Component {
       filename: this.state.filename,
     };
 
-    if (!(formdata.text | formdata.filename)) {
+    console.log(formdata.text, formdata.filename);
+
+    if (!(formdata.text || formdata.filename)) {
       return;
     }
 
@@ -45,6 +47,7 @@ class Form extends React.Component {
     axios.post('/posts', formdata).then((response) => {
       console.log(response.data);
       var token = response.data.post.upload_token;
+
       if (token) {
         var formdata = new FormData();
         formdata.append("image", image);
@@ -62,6 +65,7 @@ class Form extends React.Component {
       this.props.formCallback(response.data);
       this.setState({status: "idle"});
     }).catch((error) => {
+      console.log('???');
       console.log(error);
     });
   }

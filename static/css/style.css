@@ -24,8 +24,15 @@ form {
 }
 
 .postBody {
-  display: flex;
-  flex-direction: row;
+  overflow: auto;
+}
+
+.postLabel {
+  width: 100%;
+}
+
+.postContent {
+  position: relative;
 }
 
 .postText {
@@ -35,16 +42,17 @@ form {
 
 .postImage {
   max-width: 100%;
-  height: auto;
-  padding-right: 10px;
+  margin-right: 15px;
+  float: left;
 }
 
-.postImage > img {
+.postImage > a > img {
   width: 300px;
 }
 
 .postNumber {
   cursor: hand;
+  font-size: 125%;
 }
 
 .postTimestamp {

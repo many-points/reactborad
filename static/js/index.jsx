@@ -170,11 +170,11 @@ class Post extends React.Component {
       return (null);
     } else {
       return (
-      <a href={"/dist/images/" + this.props.postData.image} target="_blank">
-        <div className="postImage">
-            <img src={"/dist/images/" + this.props.postData.image} />
-        </div>
-      </a>
+      <div className="postImage">
+        <a href={"/dist/images/" + this.props.postData.image} target="_blank">
+          <img src={"/dist/images/" + this.props.postData.image} />
+        </a>
+      </div>
       );
     };
   }
@@ -186,15 +186,17 @@ class Post extends React.Component {
   render() {
     return (
       <div className="postBody">
-        {this.renderImage()}
-        <div>
-          <p>
-            <a onClick={() => {this.insertQuote()}}>
-              <span className="postNumber">#{this.props.postData.id}</span>
-            </a>&nbsp;
-            <span className="postTimestamp">{this.props.postData.timestamp}</span>
-          </p>
-          <p className="postText">{this.props.postData.text}</p>
+        <p className="postLabel">
+          <a onClick={() => {this.insertQuote()}}>
+            <span className="postNumber">#{this.props.postData.id}</span>
+          </a>&nbsp;
+          <span className="postTimestamp">{this.props.postData.timestamp}</span>
+        </p>
+        <div className="postContent">
+          {this.renderImage()}
+          <div className="postText">
+            <p>{this.props.postData.text}</p>
+          </div>
         </div>
       </div>
     )
